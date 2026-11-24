@@ -22,7 +22,7 @@ Artykuł obejmuje zabiegi i wyniki mające więcej niż dwa poziomy. W projekcie
 
 ## Algorytm
 
-**Zakres obowiązkowy.** Jawne granice dla jednego zdarzenia hipotetycznego z twierdzeń 4–7 Li i Pearla. Uzupełnienie: PNS dla dwóch poziomów zabiegu jako szczególny przypadek twierdzenia 8. Pełna rekurencja twierdzeń 8–11 dla wielu interwencji jest rozszerzeniem. Programowanie liniowe jest opcjonalnym narzędziem kontroli małych przykładów.
+**Zakres obowiązkowy.** Jawne granice dla jednego zdarzenia hipotetycznego z twierdzeń 4–7 Li i Pearla oraz ich ostre odpowiedniki w postaci zamkniętej z twierdzeń 3–5 Shu, Wanga i Li (2026) dla jednego członu hipotetycznego. Uzupełnienie: PNS dla dwóch poziomów zabiegu jako szczególny przypadek twierdzenia 8. Pełna rekurencja twierdzeń 8–11 dla wielu interwencji jest rozszerzeniem. Programowanie liniowe jest opcjonalnym narzędziem kontroli małych przykładów.
 
 **Wejście i oznaczenia.** $X$ ma poziomy $x_1,\ldots,x_m$, $Y$ poziomy $y_1,\ldots,y_n$. Tablica $o_{ji}=P(X=x_j,Y=y_i)$ opisuje obserwacje, a $a_{ji}=P(Y_{x_j}=y_i)$ wyniki interwencji. $Y_{x_j}$ to wynik po hipotetycznym ustawieniu zabiegu na $x_j$. Oznacz $u_j=\sum_i o_{ji}$ i $v_i=\sum_j o_{ji}$. Przyjmowana jest zgodność wyniku obserwowanego z wynikiem potencjalnym dla faktycznie otrzymanego zabiegu. Rozkład interwencyjny nie jest automatycznie rozkładem $P(Y\mid X)$.
 
@@ -32,14 +32,22 @@ Artykuł obejmuje zabiegi i wyniki mające więcej niż dwa poziomy. W projekcie
 
 $$L=\max(o_{ji},a_{ji}+v_i-1),\qquad U=\min(a_{ji},v_i).$$
 
-Wzór ogranicza prawdopodobieństwo, że po ustawieniu zabiegu wynik pozostanie taki jak obserwowany.
+Wzór ogranicza prawdopodobieństwo, że po ustawieniu zabiegu wynik pozostanie taki jak obserwowany. Dolna granica twierdzenia 4 jest ważna, ale nieostra. Ostra dolna granica (Shu, Wang i Li 2026, twierdzenie 4 dla $k=1$, $q=i$) uwzględnia warstwę $X\ne x_j$:
+
+$$L^{\text{ostra}}=\max(o_{ji},a_{ji}+v_i-1+u_j-o_{ji}).$$
+
+Przykład: dla $o=((0{,}3;0{,}2),(0{,}1;0{,}4))$ i $a_{11}=0{,}8$ twierdzenie 4 daje $[0{,}3;0{,}4]$, a granice ostre $[0{,}4;0{,}4]$.
 
 2. Zastąpienie wyniku, $P(Y_{x_j}=y_i,Y=y_k)$, dla $i\ne k$:
 
 $$L=\max\left(0,a_{ji}+v_k-1,\sum_{p\ne j}\max(0,a_{ji}+o_{pk}-1+u_j-o_{ji})\right),$$
 $$U=\min(a_{ji}-o_{ji},v_k-o_{jk}).$$
 
-Granice obejmują zmianę obserwowanego wyniku $y_k$ na hipotetyczny $y_i$.
+Granice obejmują zmianę obserwowanego wyniku $y_k$ na hipotetyczny $y_i$. Dla $m=2$ lub $n=2$ dolna granica jest ostra. Ogólnie ostra dolna granica (Shu, Wang i Li 2026, twierdzenie 4 dla $k=1$, $q\ne i$) wynosi
+
+$$L^{\text{ostra}}=\max(0,a_{ji}-o_{ji}+u_j+v_k-o_{jk}-1)$$
+
+i nie jest mniejsza od żadnego składnika wzoru Li i Pearla. Przy $i=k$ stosuje się punkt 1.
 
 3. Zmiana zabiegu w grupie, $P(Y_{x_j}=y_i,X=x_p)$, dla $j\ne p$:
 
@@ -51,22 +59,22 @@ Wzór dotyczy wyniku interwencji w grupie, która faktycznie otrzymała inny poz
 
 $$L_{ji,pk}=\max(0,a_{ji}+o_{pk}-1+u_j-o_{ji}),\qquad U_{ji,pk}=\min(a_{ji}-o_{ji},o_{pk}).$$
 
-To wspólna wielkość nazwana w twierdzeniu 7 uogólnionym PN. Granice $P(Y_{x_j}=y_i\mid X=x_p,Y=y_k)$ uzyskuje się przez podzielenie przez $o_{pk}>0$. Binarne PN i PS są odpowiednimi wyborami indeksów. Dla $j=p$ zgodność daje wynik obserwowany, więc nie używa się wzoru przeznaczonego dla $j\ne p$.
+To wspólna wielkość nazwana w twierdzeniu 7 uogólnionym PN. Granice $P(Y_{x_j}=y_i\mid X=x_p,Y=y_k)$ uzyskuje się przez podzielenie przez $o_{pk}>0$; w punktach 1–3 mianownikami warunkowania są odpowiednio $v_i$, $v_k$ i $u_p$. Binarne PN i PS są odpowiednimi wyborami indeksów. Dla $j=p$ zgodność daje wynik obserwowany, więc nie używa się wzoru przeznaczonego dla $j\ne p$.
 
 5. Dla $m=2$, $j\ne p$, wspólne zdarzenie $P(Y_{x_j}=y_i,Y_{x_p}=y_k)$ ma granice:
 
 $$L=\max(0,a_{ji}+a_{pk}-1,L_{pk,ji}+L_{ji,pk}),$$
 $$U=\min(a_{ji},a_{pk},U_{pk,ji}+U_{ji,pk}).$$
 
-Podział według faktycznego zabiegu umożliwia wykorzystanie granic z punktu 4. Binarne PNS wybiera wynik korzystny po zabiegu i niekorzystny bez niego.
+Podział według faktycznego zabiegu umożliwia wykorzystanie granic z punktu 4. Binarne PNS wybiera wynik korzystny po zabiegu i niekorzystny bez niego. Dla $m=2$ wzór pokrywa się z twierdzeniem 2 Shu, Wanga i Li (PNS($k$) dla $k=2$) i daje granice ostre; dla $m>2$ pominięcie składników twierdzenia 9 zaniża górną granicę.
 
-**Wyjście i ograniczenia.** Zdarzenie, granice, rodzaj warunkowania i wskazanie twierdzenia. Twierdzenia 4–7 dają granice ostre w modelu źródłowym. Dla ogólnej rekurencji z wieloma zdarzeniami artykuł nie gwarantuje ostrości. W zakresie obowiązkowym pojedyncze zapytanie kosztuje $O(m)$, a obliczenie wszystkich zastąpień $O(m^2n^2)$. Pełny rozkład stanów używany w porównawczym LP ma $mn^m$ składowych; ogranicz kontrolę do małych $m,n$.
+**Wyjście i ograniczenia.** Zdarzenie, granice, rodzaj warunkowania, wariant i wskazanie twierdzenia. Twierdzenia 6 i 7 dają granice ostre. Dolne granice twierdzeń 4 (zawsze) i 5 (dla $m,n\ge3$) są ważne, lecz nieostre, co pokazuje program liniowy po wszystkich typach odpowiedzi; ostre postacie zamknięte podali Shu, Wang i Li (2026), a ich ostrość dla dowolnego wymiaru udowodnili Shu i Li (2026). Dla ogólnej rekurencji z wieloma zdarzeniami artykuł Li i Pearla nie gwarantuje ostrości. W zakresie obowiązkowym pojedyncze zapytanie kosztuje $O(m)$, a obliczenie wszystkich zastąpień $O(m^2n^2)$. Pełny rozkład stanów używany w porównawczym LP ma $mn^m$ składowych; ogranicz kontrolę do małych $m,n$.
 
 Tablice traktowane są jako znane rozkłady. Granice obliczone z częstości próby nie mają przez to automatycznie określonego poziomu ufności.
 
 ## Kontrakt
 
-Macierze `obserwacje` i `interwencje` mają wymiar $m\times n$, wspólne nazwy poziomów, $m,n\ge2$, skończone elementy w $[0,1]$. Pierwsza sumuje się do 1, każdy wiersz drugiej do 1, z tolerancją `1e-10`. Nie dopuszcza się `NA`, `NaN` ani `Inf`. Warunek zgodności marginesów z obserwacjami to $o_{ji}\le a_{ji}\le o_{ji}+1-u_j$. Poziomy i ich kolejność sprawdza konstruktor; bez nazw nie wolno domyślnie dopasowywać macierzy o różnej interpretacji wierszy.
+Macierze `obserwacje` i `interwencje` mają wymiar $m\times n$, wspólne nazwy poziomów, $m,n\ge2$, skończone elementy w $[0,1]$. Pierwsza sumuje się do 1, każdy wiersz drugiej do 1, z tolerancją `1e-10`. Nie dopuszcza się `NA`, `NaN` ani `Inf`. Warunek zgodności marginesów z obserwacjami to $o_{ji}\le a_{ji}\le o_{ji}+1-u_j$. Artykuł źródłowy nie formułuje go wprost; jest wielowartościową postacią warunku Tiana i Pearla i jest konieczny oraz wystarczający dla istnienia rozkładu typów odpowiedzi. Poziomy i ich kolejność sprawdza konstruktor; bez nazw nie wolno domyślnie dopasowywać macierzy o różnej interpretacji wierszy.
 
 Niezmienniki: $0\le L\le U\le1$; granice warunkowe dotyczą tego samego zdarzenia co granice wspólne; permutacja poziomów z poprawnym dopasowaniem nazw nie zmienia wyniku. Przy zerowym mianowniku warunkowania zwróć `NA` i status `zerowe_warunkowanie`, a zachowaj granice wspólne. Wynik S3 `granice_przyczynowe`: `przedzialy` z kolumnami `zdarzenie`, `dolna`, `gorna`, `warunkowe`, `status`, `twierdzenie`, oraz `poziomy`, `parametry`. Szerokość granic nie jest błędem standardowym.
 
@@ -77,9 +85,9 @@ Zatrzymanie: „Tablice muszą mieć zgodne poziomy i wymiary”, „Prawdopodob
 Pakiet `CausalBoundsR`, licencja GPL-3. Publiczne funkcje:
 
 - `przygotuj_rozklady(obserwacje, interwencje, tolerancja = 1e-10)` – sprawdzenie i opis poziomów.
-- `granice_zdarzenia(dane, rodzaj, wynik, zabieg, wynik_obserwowany = NULL, zabieg_obserwowany = NULL, warunkowe = FALSE)` – twierdzenia 4–7.
+- `granice_zdarzenia(dane, rodzaj, wynik, zabieg, wynik_obserwowany = NULL, zabieg_obserwowany = NULL, warunkowe = FALSE, wariant = c("ostre", "artykul"))` – twierdzenia 4–7 Li i Pearla albo ostre postacie Shu, Wanga i Li.
 - `granice_pns(dane, wynik_po, wynik_bez)` – dwupoziomowy zakres punktu 5.
-- `generuj_model(n = 5000, ziarno = 202701)` – dane wraz z rozkładem stanów i prawdą znaną z konstrukcji.
+- `generuj_model(liczebnosc = 5000, ziarno = 202701)` – dane wraz z rozkładem stanów i prawdą znaną z konstrukcji. Nazwa argumentu nie koliduje z liczbą poziomów $Y$ oznaczaną przez $n$.
 
 Moduły: `R/rozklady.R`, `R/granice_jawne.R`, `R/pns.R`, `R/generator.R`, `R/metody_s3.R`. Klasa S3 `granice_przyczynowe` ma metody `print()`, `summary()` i `plot()`: skrócony wynik, zestawienie diagnostyki oraz wykres zgodny z rodzajem wyniku. Wartości i parametry pozostają dostępne bez odczytywania tekstu wydruku.
 
@@ -87,9 +95,9 @@ Moduły: `R/rozklady.R`, `R/granice_jawne.R`, `R/pns.R`, `R/generator.R`, `R/met
 
 ## Dane
 
-**Generator.** `ziarno = 202701`. Dla trzech poziomów $X$ i trzech poziomów $Y$ wylosuj dodatnie masy dla wszystkich $3\cdot3^3=81$ stanów $(X,Y_{x_1},Y_{x_2},Y_{x_3})$: niezależne zmienne Gamma(2,1), następnie podziel je przez sumę. Z rozkładu stanów wyznacz dokładne $o$, $a$ i każde badane prawdopodobieństwo. Wylosuj 5000 obserwacji; wynik obserwowany jest wynikiem potencjalnym dla faktycznego $X$. Osobno wyznacz granice dla dokładnych marginesów i częstości próby. Tylko dla dokładnych marginesów wymagaj deterministycznego zawierania prawdy.
+**Generator.** `ziarno = 202701`. Dla trzech poziomów $X$ i trzech poziomów $Y$ wylosuj dodatnie masy dla wszystkich $3\cdot3^3=81$ stanów $(X,Y_{x_1},Y_{x_2},Y_{x_3})$: niezależne zmienne Gamma(2,1), następnie podziel je przez sumę. Z rozkładu stanów wyznacz dokładne $o$, $a$ i każde badane prawdopodobieństwo. Wylosuj 5000 obserwacji; wynik obserwowany jest wynikiem potencjalnym dla faktycznego $X$. Osobno wyznacz granice dla dokładnych marginesów i częstości próby. Tylko dla dokładnych marginesów wymagaj deterministycznego zawierania prawdy. Masy Gamma(2,1) dają marginesy bliskie $1/3$, przy których żadna gałąź `max` dolnych granic nie jest aktywna; drugi wariant generatora losuje modele $2\times n$ z masami Gamma o małym parametrze kształtu (np. 0,3), uruchamia wszystkie gałęzie wzorów i służy do sprawdzenia PNS.
 
-**Obliczenia kontrolne.** Dla dwóch zabiegów i dwóch wyników przyjmij $o=((0{,}3,0{,}2),(0{,}1,0{,}4))$ oraz $a=((0{,}6,0{,}4),(0{,}2,0{,}8))$, z wynikiem korzystnym w drugiej kolumnie. PN w grupie $X=x_2,Y=y_2$ dla braku sukcesu przy $x_1$: granice wspólne $[0{,}2,0{,}3]$, warunkowe $[0{,}5,0{,}75]$. PS w grupie $X=x_1,Y=y_1$ dla sukcesu przy $x_2$: wspólne $[0{,}2,0{,}3]$, warunkowe $[2/3,1]$. PNS wynosi $[0{,}4,0{,}6]$. Przy obu interwencyjnych ryzykach sukcesu równych 0,99 górna granica PNS nie przekroczy 0,01.
+**Obliczenia kontrolne.** Dla dwóch zabiegów i dwóch wyników przyjmij $o=((0{,}3,0{,}2),(0{,}1,0{,}4))$ oraz $a=((0{,}6,0{,}4),(0{,}2,0{,}8))$, z wynikiem korzystnym w drugiej kolumnie. PN w grupie $X=x_2,Y=y_2$ dla braku sukcesu przy $x_1$: granice wspólne $[0{,}2,0{,}3]$, warunkowe $[0{,}5,0{,}75]$. PS w grupie $X=x_1,Y=y_1$ dla sukcesu przy $x_2$: wspólne $[0{,}2,0{,}3]$, warunkowe $[2/3,1]$. PNS wynosi $[0{,}4,0{,}6]$. Przy obu interwencyjnych ryzykach sukcesu równych 0,99 górna granica PNS nie przekroczy 0,01; dolna granica wynosi 0 z dokładnością arytmetyki zmiennoprzecinkowej, więc test wymaga tolerancji.
 
 **Przypadki brzegowe.** Zerowa masa grupy warunkującej; sprzeczne marginesy; poziomy zamienione miejscami; wartości -0,01 i `Inf`; deterministyczny sukces po zabiegu i porażka bez niego, dające PNS = 1. Nie zakładaj, że niezależność obserwacyjna daje najszersze granice.
 
@@ -126,7 +134,7 @@ Na obronie należy umieć przejść od obserwacji i wyniku hipotetycznego do kon
 
 ## Literatura
 
-Artykuł źródłowy: `liPearl2024probabilities`.
+Artykuł źródłowy: `liPearl2024probabilities`. Postacie ostre: `shu2026closed`, `shuLi2026sharp`.
 
 Wprowadzenie: `pearl2009causality`, `tianPearl2000bounds`. Klucze i pełne opisy są w [`zrodla/tematy.bib`](zrodla/tematy.bib).
 

@@ -34,9 +34,9 @@ $$E[I\mid I\le k]=\frac{\sum_{i=1}^{k}i q_i}{1-q_{\rm dalej}}.$$
 
 To pomocnicza średnia pozycji warunkowo względem zatrzymania w top-k, a nie bezwarunkowa oczekiwana pozycja w nieznanym ogonie. Przy zerowym prawdopodobieństwie zatrzymania jest niezdefiniowana. Suma $\sum_iq_i+q_{\rm dalej}=1$ jest podstawowym warunkiem kontroli modelu.
 
-Kroki: przekształć stopnie w satysfakcję, przejdź po pozycjach, mnożąc dotychczasowe prawdopodobieństwo dalszego szukania, zsumuj odwrotności i zachowaj rozkład zatrzymania. Koszt $O(k)$ i pamięć $O(k)$ dla pełnego profilu lub $O(1)$ dla samej miary. Duże skale obsłuż stabilnie, np. obliczając $2^{g_i-g_{\max}}-2^{-g_{\max}}$, bez przepełnienia potęg.
+Kroki: przekształć stopnie w satysfakcję, przejdź po pozycjach, mnożąc dotychczasowe prawdopodobieństwo dalszego szukania, zsumuj odwrotności i zachowaj rozkład zatrzymania. Koszt $O(k)$ i pamięć $O(k)$ dla pełnego profilu lub $O(1)$ dla samej miary. Duże skale obsłuż stabilnie, np. obliczając $2^{g_i-g_{\max}}-2^{-g_{\max}}$, bez przepełnienia potęg; dopełnienie licz jako $(1-2^{g_i-g_{\max}})+2^{-g_{\max}}$, ponieważ $1-R_i$ zaokrągla się do zera dla $g_{\max}\ge53$.
 
-Maksimum skali jest parametrem definicji ocen, nie maksimum tego rankingu. Stopnie 0..4 oznaczają pięć poziomów. Dla binarnych ocen stosuj $g_{\max}=1$ bez dorabiania stopni pośrednich. Model nie zakłada, że maksymalnie trafny dokument zatrzymuje każdego: $R_{\max}=1-2^{-g_{\max}}$.
+Maksimum skali jest parametrem definicji ocen, nie maksimum tego rankingu. Stopnie 0..4 oznaczają pięć poziomów. Dla binarnych ocen stosuj $g_{\max}=1$ bez dorabiania stopni pośrednich. Model nie zakłada, że maksymalnie trafny dokument zatrzymuje każdego: $R_{\max}=1-2^{-g_{\max}}$. Artykuł wskazuje, że przy ocenach binarnych ERR przechodzi w odwrotność pozycji pierwszego trafnego dokumentu, co wymaga $R_i\in\{0,1\}$; przy $g_{\max}=1$ wzór daje $R=0{,}5$, więc ERR(1,0) = 0,5.
 
 ## Kontrakt
 
@@ -61,7 +61,7 @@ Moduły: `R/skala.R`, `R/err.R`, `R/symulacja.R`, `R/metody_s3.R`. Klasa S3 `wyn
 
 ## Dane
 
-**Generator.** `ziarno = 202713`. Dla 100 zapytań i 50 dokumentów losuj stopnie 0..4 z prawdopodobieństwami (0,5; 0,2; 0,15; 0,1; 0,05). Systemy porządkują $g_i+\varepsilon_i$, z $\varepsilon\sim N(0,\sigma^2)$, sigma = 0,5, 1, 3. Pełne stopnie i dokładny profil q stanowią prawdę. Dla każdego rankingu symuluj 10000 użytkowników: w każdej kolejnej pozycji Bernoulli($R_i$), zakończenie przy pierwszym sukcesie. Niezatrzymanie w top-k wnosi 0 do odwrotności. Porównuj empiryczną średnią z ERR oraz rozkład zatrzymania z q, z tolerancją wynikającą z błędu Monte Carlo. Braki są tylko testem odrzucenia. Osobno podmień pierwszą pozycję na stopień maksymalny i analizuj wpływ bardzo wczesnego wyniku.
+**Generator.** `ziarno = 202713`. Dla 100 zapytań i 50 dokumentów losuj stopnie 0..4 z prawdopodobieństwami (0,5; 0,2; 0,15; 0,1; 0,05). Systemy porządkują $g_i+\varepsilon_i$, z $\varepsilon\sim N(0,\sigma^2)$, sigma = 0,5, 1, 3. Pełne stopnie i dokładny profil q stanowią prawdę. Dla każdego rankingu symuluj 10000 użytkowników: w każdej kolejnej pozycji Bernoulli($R_i$), zakończenie przy pierwszym sukcesie. Niezatrzymanie w top-k wnosi 0 do odwrotności. Porównuj empiryczną średnią ERR@10 z wartością ze wzoru oraz rozkład zatrzymania z q, z tolerancją wynikającą z błędu Monte Carlo: około czterech błędów standardowych przy setkach rankingów i łączeniu komórek o oczekiwanej liczności poniżej 5 w teście zgodności rozkładu. Braki są tylko testem odrzucenia. Osobno podmień pierwszą pozycję na stopień maksymalny i analizuj wpływ bardzo wczesnego wyniku.
 
 **Obliczenia kontrolne.** Skala 0..1, ranking (1,0): R=(0,5; 0), q=(0,5; 0), ERR = 0,5, dalej = 0,5, średnia warunkowa pozycji = 1. Ranking (0,1): ERR = 0,25, średnia warunkowa = 2. Skala 0..2, ranking (2,1): R=(0,75; 0,25), q=(0,75; 0,0625), ERR = 0,78125, dalej = 0,1875, średnia warunkowa = 14/13. Same zera dają ERR = 0 i niezdefiniowaną średnią warunkową.
 

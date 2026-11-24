@@ -26,9 +26,9 @@ Własny pakiet ma udostępniać te składowe i umożliwiać porównanie okien cy
 
 $$D_p=\frac{N_i-N_j}{N_i+N_j+N_k},\qquad d_p=\frac{N_i-N_j}{N_i+N_j},\qquad R_k=\frac{N_k}{N_i+N_j}.$$
 
-$D_p$ jest klasycznym indeksem, $d_p$ wyraża bilans pomijania i współcytowania źródeł wśród bezpośrednio cytujących, a $R_k$ stosunek cytujących tylko źródła do cytujących publikację. Przy dodatnich mianownikach zachodzi dokładna tożsamość $D_p=d_p/(1+R_k)$.
+$D_p$ jest klasycznym indeksem, $d_p$ wyraża bilans pomijania i współcytowania źródeł wśród bezpośrednio cytujących, a $R_k$ stosunek cytujących tylko źródła do cytujących publikację. Przy dodatnich mianownikach zachodzi dokładna tożsamość $D_p=d_p/(1+R_k)$; artykuł zapisuje ją znakiem przybliżenia.
 
-Niech $C_p=|F|$, a $C_{\max}$ będzie największą liczbą cytowań pojedynczego źródła $p$ w tym samym oknie.
+Niech $C_p=|F|$, a $C_{\max}$ będzie największą liczbą cytowań pojedynczego źródła $p$ w tym samym oknie. Artykuł nie określa okna dla $C_{\max}$; wspólne okno jest decyzją projektu. Przy wspólnym oknie każdy cytujący źródło należy do $B$, więc $\lceil |B|/n\rceil\le C_{\max}\le |B|$, gdzie $n$ jest liczbą źródeł, a ponadto $b_p\le 1+R_k$ i $R_k\le n\,b_p$.
 
 $$b_p=C_{\max}/C_p.$$
 
@@ -61,9 +61,9 @@ Moduły: `R/siec.R`, `R/zbiory_cytowan.R`, `R/wyparcie.R`, `R/generator.R`, `R/m
 
 ## Dane
 
-**Generator.** `ziarno = 202704`. Utwórz 1000 publikacji z rokiem równym $2000+\lfloor(i-1)/50\rfloor$. Każda od 2001 r. wybiera bez zwracania do pięciu wcześniejszych publikacji, z prawdopodobieństwem proporcjonalnym do $1+$ aktualna liczba cytowań. Następnie dołącz 20 odrębnych składowych, każdą z nowym celem, jego dwoma własnymi źródłami i przyszłymi cytującymi o dokładnie znanych $N_i,N_j,N_k$, np. $(10,0,10)$, $(0,10,10)$ i $(5,5,90)$; Składowe nie łączą się z bazową siecią, a identyfikatory nowych prac nie mogą się pokrywać. Zadaj lata źródeł wcześniejsze od celu, a przyszłych cytujących od roku celu + 1 do + 5. To prawda konstrukcyjna dotycząca liczności i indeksów, bez twierdzenia o rzeczywistej nowości prac. Osobno usuń losowo 5% i 20% krawędzi oraz odetnij cytowania po trzecim roku, zachowując pełną sieć jako wzorzec.
+**Generator.** `ziarno = 202704`. Utwórz 1000 publikacji z rokiem równym $2000+\lfloor(i-1)/50\rfloor$. Każda od 2001 r. wybiera bez zwracania do dziesięciu wcześniejszych publikacji z prawdopodobieństwem proporcjonalnym do $(1+c)\exp(-(\text{wiek}-1)/3)$, gdzie $c$ jest aktualną liczbą cytowań; z prawdopodobieństwem 0,3 kolejne źródło jest kopiowane z listy źródeł pracy już wybranej. Starzenie i kopiowanie źródeł tworzą współcytowanie, bez którego znak $d$ odwraca się względem obserwacji z artykułu. Następnie dołącz 20 odrębnych składowych, każdą z nowym celem, $n_z\in\{3,10,30\}$ własnymi źródłami o popularności Zipfa i przyszłymi cytującymi o dokładnie znanych $N_i,N_j,N_k$ oraz liczbach cytujących każde źródło, tak aby $C_{\max}$ i $b_p$ były znane z konstrukcji, a siatka obejmowała $b_p<1$, $b_p=1$ i $b_p\gg1$. Składowe nie łączą się z bazową siecią, a identyfikatory nowych prac nie mogą się pokrywać. Zadaj lata źródeł wcześniejsze od celu, a przyszłych cytujących od roku celu + 1 do + 5. To prawda konstrukcyjna dotycząca liczności i indeksów, bez twierdzenia o rzeczywistej nowości prac. Osobno usuń losowo 5% i 20% krawędzi oraz odetnij cytowania po trzecim roku, zachowując pełną sieć jako wzorzec.
 
-**Obliczenia kontrolne.** $(N_i,N_j,N_k)=(1,0,1)$ daje $D=0{,}5$, $d=1$, $R_k=1$. $(0,0,1)$ daje $D=0$, pozostałe dwa wskaźniki `NA`. $(2,1,3)$ daje $D=1/6$, $d=1/3$, $R_k=1$; jeśli $C_{\max}=5$, to $b_p=5/3$. $(0,0,0)$ daje `D=NA`.
+**Obliczenia kontrolne.** $(N_i,N_j,N_k)=(1,0,1)$ daje $D=0{,}5$, $d=1$, $R_k=1$. $(0,0,1)$ daje $D=0$, pozostałe dwa wskaźniki `NA`. $(2,1,3)$ daje $D=1/6$, $d=1/3$, $R_k=1$; jeśli $C_{\max}=4$, to $b_p=4/3$. Wartość $C_{\max}=5$ jest niewykonalna przy wspólnym oknie, ponieważ $|B|=N_j+N_k=4$. $(0,0,0)$ daje `D=NA`.
 
 **Przypadki brzegowe.** Brak źródeł; brak przyszłych cytowań; powtórzone krawędzie; brakujący rok; jedna praca cytująca wiele źródeł, liczona do B tylko raz; bardzo popularne źródło powodujące duży zbiór B.
 

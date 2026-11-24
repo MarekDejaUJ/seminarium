@@ -32,22 +32,22 @@ $$s_c(w)=\max_t P_c(t,w),\qquad s(w)=\min_c s_c(w).$$
 
 Pierwszy krok wybiera największą istotność wyrażenia w społeczności, drugi ocenia jego najsłabszą społeczność. Wybierz `liczba` wyrażeń o najwyższym $s(w)$; jest to parametr $\gamma$ z równania 2. Wyrażenie obecne tylko po jednej stronie może otrzymać zero.
 
-**Wariant rangowy.** Dla każdego tematu posortuj wyrażenia według malejącego prawdopodobieństwa. $R_c(t,w)$ jest pozycją wyrażenia; nieobecny termin otrzymuje rangę o 1 większą od liczby wyrażeń obecnych w temacie.
+**Wariant rangowy.** Dla każdego tematu posortuj wszystkie terminy słownika modelu, łącznie z pojedynczymi słowami, według malejącego prawdopodobieństwa; zawężenie rankingu do kandydatów zmienia wynik. $R_c(t,w)$ jest pozycją wyrażenia; nieobecny termin otrzymuje rangę o 1 większą od liczby wyrażeń obecnych w temacie.
 
 $$r_c(w)=\min_t R_c(t,w),\qquad r(w)=\max_c r_c(w).$$
 
-To najlepsza pozycja w tematach społeczności i najgorsza spośród tych pozycji między społecznościami. Wybierz wyrażenia z $r(w)\le\lambda$, gdzie $\lambda$ jest progiem rangi z równania 4. Wariant nie polega na wyborze wyrażeń z $\lambda\le r(w)$. Remisy rozstrzygaj identyfikatorem wyrażenia i zapisz tę regułę; źródłowy wybór losowy przy remisie może dać inny zestaw.
+To najlepsza pozycja w tematach społeczności i najgorsza spośród tych pozycji między społecznościami. Wybierz wyrażenia z $r(w)\le\lambda$, gdzie $\lambda$ jest progiem rangi z równania 4. Wariant nie polega na wyborze wyrażeń z $\lambda\le r(w)$. Remisy rozstrzygaj identyfikatorem wyrażenia, zarówno przy rangach w obrębie tematu, jak i przy wyborze top-$\gamma$ i top-$\beta$; zapisz tę regułę. Źródłowy wybór losowy przy remisie może dać inny zestaw. Rysunek 2 artykułu zawiera błędy rachunkowe i nie nadaje się na wzorzec testów.
 
 **Ocena.** Dla wybranego zbioru $FC$ o $f$ elementach i niezerowych wektorach $v_i$:
 
 $$\operatorname{sim}(i,j)=\frac{v_i^\top v_j}{\|v_i\|\|v_j\|},\qquad
 H_\alpha=\frac{\sum_{i<j}\mathbf1(\operatorname{sim}(i,j)\ge\alpha)}{\binom f2}.$$
 
-Podobieństwo kosinusowe opisuje kierunki wektorów. Jednorodność $H_\alpha$ jest udziałem podobnych par przy progu $\alpha$; niższa wartość oznacza większe zróżnicowanie kandydatów. Nie jest średnim podobieństwem wypowiedzi w skupieniu. Dla top-$\beta$ kandydatów $FC_\beta$ i ręcznie oznaczonego zbioru trafnych wyrażeń $G$:
+Podobieństwo kosinusowe opisuje kierunki wektorów. Jednorodność $H_\alpha$ jest udziałem podobnych par przy progu $\alpha$; niższa wartość oznacza większe zróżnicowanie kandydatów. Artykuł stosuje $\alpha\in\{0{,}6;0{,}7;0{,}8;0{,}9\}$. Nie jest średnim podobieństwem wypowiedzi w skupieniu. Dla top-$\beta$ kandydatów $FC_\beta$ i ręcznie oznaczonego zbioru trafnych wyrażeń $G$:
 
 $$\operatorname{relevancy}_\beta=|FC_\beta\cap G|/|FC_\beta|.$$
 
-To udział wyrażeń związanych ze sprawą. $\beta$ określa liczbę ocenianych kandydatów; przy mniejszym dostępnym zbiorze zapisz rzeczywistą liczebność mianownika. Brak etykiety nie jest etykietą nietrafną.
+To udział wyrażeń związanych ze sprawą. $\beta$ określa liczbę ocenianych kandydatów; przy mniejszym dostępnym zbiorze zapisz rzeczywistą liczebność mianownika. Brak etykiety nie jest etykietą nietrafną; artykuł liczy wyrażenia bez etykiety jako nietrafne, więc reguła `NA` jest decyzją projektu.
 
 Koszt selekcji: $O(\sum_c T_cV)$ w wariancie probabilistycznym i $O(\sum_c T_cV\log V)$ przy pełnym sortowaniu rangowym; $T_c$ to liczba tematów, $V$ rozmiar słownika. Jednorodność kosztuje $O(f^2h)$ dla wektorów długości $h$. Modele różnych społeczności muszą używać porównywalnego słownika i przygotowania tekstu. Selekcja wspólnych wyrażeń nie mierzy samodzielnie stopnia polaryzacji.
 
@@ -75,9 +75,9 @@ Moduły: `R/modele.R`, `R/selekcja.R`, `R/ocena.R`, `R/generator.R`, `R/metody_s
 
 ## Dane
 
-**Generator.** `ziarno = 202705`. Dwie społeczności, po trzy tematy, słownik 60 terminów, w tym 20 wyrażeń wielowyrazowych. Dla każdego tematu losuj rozkład Dirichleta przez niezależne Gamma z parametrem kształtu 0,2, a dla czterech wspólnych wyrażeń użyj 10 w przynajmniej jednym temacie każdej społeczności. Dla czterech wyrażeń jednostronnych zwiększ parametr tylko w pierwszej społeczności. Po normalizacji zachowaj wszystkie prawdopodobieństwa i oblicz wynik min/max osobnym skryptem. Dla wektorów utwórz dwa bliskie kierunki w trzech wymiarach z szumem $N(0,0{,}02^2)$ i dwa odrębne kierunki. Braki i zerową normę dodaj wyłącznie do wariantów walidacyjnych. Konstrukcja wskazuje zadane terminy, ale nie gwarantuje ich selekcji w każdej losowej realizacji.
+**Generator.** `ziarno = 202705`. Dwie społeczności, po trzy tematy, słownik 60 terminów, w tym 20 wyrażeń wielowyrazowych. Dla każdego tematu losuj rozkład Dirichleta przez niezależne Gamma z parametrem kształtu 0,2, a dla czterech wspólnych wyrażeń użyj 10 w przynajmniej jednym temacie każdej społeczności. Wyrażenie wspólne $k$ trafia do tematu $((k-1)\bmod 3)+1$ obu społeczności. Dla czterech wyrażeń jednostronnych zwiększ parametr tylko w pierwszej społeczności, a w drugiej nadaj im parametr 0,001 we wszystkich tematach. Bez tej zmiany wyrażenia jednostronne w drugiej społeczności są zwykłym szumem o parametrze 0,2 i przy `liczba = 10` wchodzą do wyboru przypadkiem, a zadana struktura wraca w około jednej realizacji na sto. Wybór demonstruj przy `liczba = 4` i `prog_rangi = 4`; w 100 realizacjach wariant probabilistyczny wybiera dokładnie wyrażenia wspólne, a rangowy obejmuje wszystkie wspólne i żadnego jednostronnego. Po normalizacji zachowaj wszystkie prawdopodobieństwa i oblicz wynik min/max osobnym skryptem. Wektory pięciowymiarowe mają wszyscy kandydaci: pary wyrażeń wspólnych leżą przy dwóch kierunkach bazy z szumem $N(0,0{,}02^2)$, wyrażenia jednostronne przy trzecim, pozostałe mają losowe kierunki. Braki i zerową normę dodaj wyłącznie do wariantów walidacyjnych.
 
-**Obliczenia kontrolne.** Dwie jedno-tematowe społeczności, terminy `a_b`, `c_d`, `e_f`, rozkłady $(0{,}5,0{,}3,0{,}2)$ i $(0{,}2,0{,}5,0{,}3)$: wyniki probabilistyczne $(0{,}2,0{,}3,0{,}2)$, a rangi maksymalne $(3,2,3)$. Top-1 i próg rangi 2 wybierają `c_d`. Wektory $(1,0),(1,0),(0,1)$ przy $\alpha=0{,}8$ dają H = 1/3. Dwie trafne etykiety w top-3 dają trafność 2/3.
+**Obliczenia kontrolne.** Dwie jedno-tematowe społeczności, terminy `a_b`, `c_d`, `e_f`, rozkłady $(0{,}5,0{,}3,0{,}2)$ i $(0{,}2,0{,}5,0{,}3)$: wyniki probabilistyczne $(0{,}2,0{,}3,0{,}2)$, a rangi maksymalne $(3,2,3)$. Top-1 i próg rangi 2 wybierają `c_d`. Wektory $(1,0),(1,0),(0,1)$ trzech terminów przy $\alpha=0{,}8$ dają H = 1/3 dla zbioru top-3. Dwie trafne etykiety w top-3 dają trafność 2/3.
 
 **Przypadki brzegowe.** Termin nieobecny w jednej społeczności; identyczne wyniki selekcji; jeden lub zero kandydatów; zerowy wektor; inne słowniki; brak ręcznej oceny jednego wybranego wyrażenia.
 
@@ -103,7 +103,7 @@ Moduły: `R/modele.R`, `R/selekcja.R`, `R/ocena.R`, `R/generator.R`, `R/metody_s
 2. **Przykłady analityczne.** Sprawdź wybór c_d, jednorodność 1/3 i trafność 2/3. Wynik: testy z liczbowymi wartościami oczekiwanymi. Sprawdzenie: odtwórz rachunki na kartce lub osobnym, prostym skryptem; nie wyznaczaj oczekiwanych wartości testowaną funkcją.
 3. **Walidacja.** Zapisz testy wszystkich błędów wymienionych w kontrakcie oraz poprawnych danych prowadzących do `NA`. Wynik: konstruktor wejścia i stabilne komunikaty. Sprawdzenie: błędne dane zatrzymują obliczenia, a niezdefiniowana miara ma opisany status.
 4. **Rdzeń.** Oblicz najpierw max po tematach i min po społecznościach, następnie analogiczny wariant rangowy i ocenę par. Wynik: działające funkcje i obiekt S3. Sprawdzenie: testy analityczne oraz porównanie z niezależną, najprostszą wersją obliczenia.
-5. **Eksperyment.** Porównaj top-10, top-20 i top-30, progi jednorodności 0,5 i 0,8 oraz niezależne oceny koderów. Wynik: skrypt z konfiguracją, ziarnami i tabelą wyników. Sprawdzenie: powtórzenie daje te same dane i odtwarza tabelę; raport obejmuje wszystkie zaplanowane warianty.
+5. **Eksperyment.** Porównaj top-10, top-20 i top-30, progi jednorodności 0,6 i 0,8 oraz niezależne oceny koderów ze zgodnością mierzoną współczynnikiem kappa Cohena. Wynik: skrypt z konfiguracją, ziarnami i tabelą wyników. Sprawdzenie: powtórzenie daje te same dane i odtwarza tabelę; raport obejmuje wszystkie zaplanowane warianty.
 6. **Udostępnienie.** Dodaj dokumentację, metodę wykresu, winietę i przykład w aplikacji. Wynik: instalowalny pakiet i działająca strona. Sprawdzenie: przykład działa po instalacji w czystej sesji R; opis odróżnia wynik liczbowy od jego interpretacji.
 
 ## Pułapki
